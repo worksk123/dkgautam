@@ -426,7 +426,6 @@ const CONFIG = Object.freeze({
   pageViewDelayMs: 3000,       // interaction ke saath 3 sec
   passiveReaderDelayMs: 8000,  // bina interaction 8 sec focus
   minimumClickTimeMs: 1500,    // 1.5 sec se pehle click = fake
-  confirmWindowMs: 4000,       // double-tap confirm window
   trackedRedirectDelayMs: 700,
   fastRedirectDelayMs: 50,
 
@@ -532,25 +531,9 @@ function fireLead(elapsedMs) {
   sessionSave(CONFIG.leadKey);
 }
 
-/* Click handler: double-tap confirm + trusted + time + bot checks */
+/* Click handler: ek click me hi Telegram open hoga */
 function handleTelegramClick(event) {
   event.preventDefault();
-  const button = event.currentTarget;
-
-  if (!button.dataset.armed) {
-    button.dataset.armed = '1';
-    button.dataset.originalHtml = button.innerHTML;
-    button.innerHTML = '<span class="hi">✓ जॉइन करने के लिए फिर से टैप करें</span>';
-    button.dataset.armTimer = setTimeout(() => {
-      delete button.dataset.armed;
-      button.innerHTML = button.dataset.originalHtml;
-    }, CONFIG.confirmWindowMs);
-    return;
-  }
-
-  clearTimeout(Number(button.dataset.armTimer));
-  delete button.dataset.armed;
-  button.innerHTML = button.dataset.originalHtml;
 
   if (redirectStarted) return;
   redirectStarted = true;
